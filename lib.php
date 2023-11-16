@@ -2,13 +2,16 @@
 defined('MOODLE_INTERNAL') || die();
 
 function get_array_short_months()
-{   
-    $datetime = new DateTime('now', new DateTimeZone('UTC'));
+{
     $months = array();
 
-    for ($mes = 1; $mes <= 12; $mes++) {
-        $datetime->setDate($datetime->format('Y'), $mes, 1);
-        $shortname = strftime('%b', $datetime->getTimestamp());
+    for ($month = 1; $month <= 12; $month++) {
+        $datetime = new DateTime('now', new DateTimeZone('UTC'));
+        $datetime->setDate($datetime->format('Y'), $month, 1);
+        $formatter = new IntlDateFormatter(current_language(), IntlDateFormatter::NONE, IntlDateFormatter::NONE);
+        $formatter->setPattern('MMM');
+        $shortname = $formatter->format($datetime);
+
         $months[] = ucfirst($shortname);
     }
 
@@ -17,13 +20,16 @@ function get_array_short_months()
 
 function get_array_months()
 {   
-    $datetime = new DateTime('now', new DateTimeZone('UTC'));
     $months = array();
 
-    for ($mes = 1; $mes <= 12; $mes++) {
-        $datetime->setDate($datetime->format('Y'), $mes, 1);
-        $name = strftime('%B', $datetime->getTimestamp());
-        $months[] = ucfirst($name);
+    for ($month = 1; $month <= 12; $month++) {
+        $datetime = new DateTime('now', new DateTimeZone('UTC'));
+        $datetime->setDate($datetime->format('Y'), $month, 1);
+        $formatter = new IntlDateFormatter(current_language(), IntlDateFormatter::NONE, IntlDateFormatter::NONE);
+        $formatter->setPattern('MMMM');
+        $shortname = $formatter->format($datetime);
+
+        $months[] = ucfirst($shortname);
     }
 
     return $months;
@@ -31,30 +37,36 @@ function get_array_months()
 
 function get_array_short_days()
 {   
-    $datetime = new DateTime('now', new DateTimeZone('UTC'));
-    $days = array();
+    $weekdays = array();
 
     for ($day = 1; $day <= 7; $day++) {
+        $datetime = new DateTime('now', new DateTimeZone('UTC'));
         $datetime->setISODate($datetime->format('Y'), $datetime->format('W'), $day);
-        $shortname = strftime('%a', $datetime->getTimestamp());
-        $days[] = ucfirst($shortname);
+        $formatter = new IntlDateFormatter(current_language(), IntlDateFormatter::NONE, IntlDateFormatter::NONE);
+        $formatter->setPattern('EEE');
+        $dayname = $formatter->format($datetime);
+
+        $weekdays[] = ucfirst($dayname);
     }
 
-    return $days;
+    return $weekdays;
 }
 
 function get_array_days()
 {   
-    $datetime = new DateTime('now', new DateTimeZone('UTC'));
-    $days = array();
+    $weekdays = array();
 
     for ($day = 1; $day <= 7; $day++) {
+        $datetime = new DateTime('now', new DateTimeZone('UTC'));
         $datetime->setISODate($datetime->format('Y'), $datetime->format('W'), $day);
-        $shortname = strftime('%A', $datetime->getTimestamp());
-        $days[] = ucfirst($shortname);
+        $formatter = new IntlDateFormatter(current_language(), IntlDateFormatter::NONE, IntlDateFormatter::NONE);
+        $formatter->setPattern('EEEE');
+        $dayname = $formatter->format($datetime);
+
+        $weekdays[] = ucfirst($dayname);
     }
 
-    return $days;
+    return $weekdays;
 }
 
 function tool_languagepatch_before_footer() {
